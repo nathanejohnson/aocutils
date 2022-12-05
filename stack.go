@@ -1,6 +1,6 @@
 package aocutils
 
-// Stack mplements a stack using generics.
+// Stack implements a stack using generics.
 type Stack[T any] struct {
 	vals []T
 }
@@ -33,9 +33,6 @@ func (s *Stack[T]) Pop() T {
 // length of the return will be the number of values in the stack.
 func (s *Stack[T]) PopN(n int) []T {
 	l := len(s.vals)
-	if l == 0 {
-		return nil
-	}
 	end := l - n
 	if end < 0 {
 		end = 0
@@ -66,11 +63,15 @@ func (s *Stack[T]) Shift() T {
 	return t
 }
 
-// ShiftN removes n elements from the front of the stack and returns them.
+// ShiftN removes up to n elements from the front of the stack and returns them.
+// If n is larger than the size of the internal slice, the length of the return
+// will be smaller than n.
 func (s *Stack[T]) ShiftN(n int) []T {
+	l := len(s.vals)
+
 	newBeg := n
-	if len(s.vals) < newBeg {
-		newBeg = len(s.vals)
+	if l < newBeg {
+		newBeg = l
 	}
 	vals := s.vals[:newBeg]
 	s.vals = s.vals[newBeg:]
@@ -81,10 +82,10 @@ func (s *Stack[T]) ShiftN(n int) []T {
 // a reference to the stack.
 func (s *Stack[T]) Unshift(t ...T) *Stack[T] {
 	tl := len(t)
-	newVals := make([]T, len(s.vals)+tl)
-	copy(newVals, t)
-	copy(newVals[tl:], s.vals)
-	s.vals = newVals
+	temp := make([]T, len(s.vals)+tl)
+	copy(temp, t)
+	copy(temp[tl:], s.vals)
+	s.vals = temp
 	return s
 }
 

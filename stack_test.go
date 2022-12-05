@@ -16,9 +16,14 @@ func TestStack_Pop(t *testing.T) {
 
 func TestStack_PopN(t *testing.T) {
 	s := NewStack[string]()
-	s.vals = append(s.vals, "a", "b", "c", "d", "e")
+	var expected []string = nil
 	vals := s.PopN(3)
-	expected := []string{"a", "b"}
+	if !reflect.DeepEqual(expected, s.vals) {
+		t.Errorf("expected %#v got %#v", expected, s.vals)
+	}
+	s.vals = append(s.vals, "a", "b", "c", "d", "e")
+	vals = s.PopN(3)
+	expected = []string{"a", "b"}
 	if !reflect.DeepEqual(s.vals, expected) {
 		t.Errorf("expected %#v got %#v", expected, s.vals)
 	}
@@ -58,9 +63,14 @@ func TestStack_Unshift(t *testing.T) {
 }
 func TestStack_ShiftN(t *testing.T) {
 	s := NewStack[string]()
-	s.vals = []string{"e", "f", "g", "a", "b", "c"}
+	var expected []string = nil
 	vals := s.ShiftN(3)
-	expected := []string{"a", "b", "c"}
+	if !reflect.DeepEqual(expected, vals) {
+		t.Errorf("expected %#v got %#v", expected, s.vals)
+	}
+	s.vals = []string{"e", "f", "g", "a", "b", "c"}
+	vals = s.ShiftN(3)
+	expected = []string{"a", "b", "c"}
 	if !reflect.DeepEqual(expected, s.vals) {
 		t.Errorf("expected %#v got %#v", expected, s.vals)
 	}
