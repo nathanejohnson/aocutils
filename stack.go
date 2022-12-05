@@ -10,29 +10,33 @@ func NewStack[T any]() *Stack[T] {
 	return &Stack[T]{}
 }
 
-// Push one or more values onto the stack.  Returns a reference to the stack.
+// Push - pushone or more values onto the stack.  Returns a reference to the stack.
 func (s *Stack[T]) Push(t ...T) *Stack[T] {
 	s.vals = append(s.vals, t...)
 	return s
 }
 
-// Pop the last value from the stack and return it.  If the
+// Pop - pop the last value from the stack and return it.  If the
 // stack is empty, return the zero value of T
 func (s *Stack[T]) Pop() T {
 	var t T
-	if len(s.vals) > 0 {
-		last := len(s.vals) - 1
+	last := len(s.vals) - 1
+	if last >= 0 {
 		t = s.vals[last]
 		s.vals = s.vals[:last]
 	}
 	return t
 }
 
-// Pop up to n values off the stack and return them.
+// PopN - pop up to n values off the stack and return them.
 // If there are less values in the stack than n, the
-// length of the return will be less than n.
+// length of the return will be the number of values in the stack.
 func (s *Stack[T]) PopN(n int) []T {
-	end := len(s.vals) - n
+	l := len(s.vals)
+	if l == 0 {
+		return nil
+	}
+	end := l - n
 	if end < 0 {
 		end = 0
 	}
@@ -52,6 +56,7 @@ func (s *Stack[T]) Peek(i int) T {
 }
 
 // Shift removes the front most element from the stack and returns it.
+// If the stack is empty, returns the zero value of type T.
 func (s *Stack[T]) Shift() T {
 	var t T
 	if len(s.vals) > 0 {
@@ -98,4 +103,11 @@ func (s *Stack[T]) Clone() *Stack[T] {
 // Vals - getter function for the values in the stack.
 func (s *Stack[T]) Vals() []T {
 	return s.vals
+}
+
+// SetVals sets the values of the internal slice and returns
+// a reference to the stack s.  No copy is made, just an assignment.
+func (s *Stack[T]) SetVals(vals []T) *Stack[T] {
+	s.vals = vals
+	return s
 }
