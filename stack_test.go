@@ -82,5 +82,46 @@ func TestStack_ShiftN(t *testing.T) {
 }
 
 func TestStack_Poke(t *testing.T) {
+	s := NewStack[string]()
+	s.vals = []string{"a", "b", "c"}
+	s.Poke(1, "Z", "Y")
+	expected := []string{"a", "Z", "Y", "b", "c"}
+	if !reflect.DeepEqual(expected, s.vals) {
+		t.Errorf("expected %#v got %#v", expected, s.vals)
+	}
+	s.Poke(0, "X")
+	expected = append([]string{"X"}, expected...)
+	if !reflect.DeepEqual(expected, s.vals) {
+		t.Errorf("expected %#v got %#v", expected, s.vals)
+	}
+	s.Poke(-1, "W")
+	expected = []string{"X", "a", "Z", "Y", "b", "W", "c"}
+	if !reflect.DeepEqual(expected, s.vals) {
+		t.Errorf("expected %#v got %#v", expected, s.vals)
+	}
+}
 
+func TestStack_Peek(t *testing.T) {
+	s := NewStack[string]()
+	s.vals = []string{"a", "b", "c"}
+	var expected string
+	val := s.Peek(-4)
+	if !reflect.DeepEqual(expected, val) {
+		t.Errorf("expected %#v got %#v", expected, val)
+	}
+	expected = "c"
+	val = s.Peek(-1)
+	if !reflect.DeepEqual(expected, val) {
+		t.Errorf("expected %#v got %#v", expected, val)
+	}
+}
+
+func TestStack_Set(t *testing.T) {
+	s := NewStack[string]()
+	s.vals = []string{"a", "b", "c"}
+	s.Set(-1, "d")
+	expected := []string{"a", "b", "d"}
+	if !reflect.DeepEqual(expected, s.vals) {
+		t.Errorf("expected %#v got %#v", expected, s.vals)
+	}
 }

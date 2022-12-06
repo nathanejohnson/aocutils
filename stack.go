@@ -42,11 +42,22 @@ func (s *Stack[T]) PopN(n int) []T {
 	return vals
 }
 
+func (s *Stack[T]) ind(i int) int {
+	if i < 0 {
+		i = len(s.vals) + i
+	}
+	return i
+}
+
 // Peek gives us the value at index i and returns it.  If
 // index i does not exist it returns the zero value of type T.
+// negatives count from the right hand side, so -1 gives the
+// last element.
 func (s *Stack[T]) Peek(i int) T {
 	var t T
-	if i < len(s.vals) {
+	l := len(s.vals)
+	i = s.ind(i)
+	if i < l && i >= 0 {
 		return s.vals[i]
 	}
 	return t
@@ -54,10 +65,14 @@ func (s *Stack[T]) Peek(i int) T {
 
 // Poke - poke values in at index i.  If i is invalid, returns nil.
 // Otherwise inserts t into stack at index i, returning a reference to
-// the stack.
+// the stack.  Negative indexes count from the right, however -1
+// will insert one before the last element of the stack.  To
+// insert at the end, either use Push() or passive a positive
+// integer equal to the length of the stack.
 func (s *Stack[T]) Poke(i int, t ...T) *Stack[T] {
+	i = s.ind(i)
 	l := len(s.vals)
-	if l < i {
+	if l < i || i < 0 {
 		return nil
 	}
 	if i == 0 {
@@ -67,6 +82,18 @@ func (s *Stack[T]) Poke(i int, t ...T) *Stack[T] {
 		return s.Push(t...)
 	}
 	s.vals = append(s.vals[:i], append(t, s.vals[i:]...)...)
+	return s
+}
+
+// Set assigns value t at index i.  negative values of i are allowed, counting from right.
+// If i is invalid, return value is nil, otherwise stack is returned.
+func (s *Stack[T]) Set(i int, t T) *Stack[T] {
+	i = s.ind(i)
+	l := len(s.vals)
+	if l < i || i < 0 {
+		return nil
+	}
+	s.vals[i] = t
 	return s
 }
 
