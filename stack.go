@@ -52,6 +52,24 @@ func (s *Stack[T]) Peek(i int) T {
 	return t
 }
 
+// Poke - poke values in at index i.  If i is invalid, returns nil.
+// Otherwise inserts t into stack at index i, returning a reference to
+// the stack.
+func (s *Stack[T]) Poke(i int, t ...T) *Stack[T] {
+	l := len(s.vals)
+	if l < i {
+		return nil
+	}
+	if i == 0 {
+		return s.Unshift(t...)
+	}
+	if i == l {
+		return s.Push(t...)
+	}
+	s.vals = append(s.vals[:i], append(t, s.vals[i:]...)...)
+	return s
+}
+
 // Shift removes the front most element from the stack and returns it.
 // If the stack is empty, returns the zero value of type T.
 func (s *Stack[T]) Shift() T {
@@ -81,11 +99,7 @@ func (s *Stack[T]) ShiftN(n int) []T {
 // Unshift moves one or more elements t onto the front of the stack.  Returns
 // a reference to the stack.
 func (s *Stack[T]) Unshift(t ...T) *Stack[T] {
-	tl := len(t)
-	temp := make([]T, len(s.vals)+tl)
-	copy(temp, t)
-	copy(temp[tl:], s.vals)
-	s.vals = temp
+	s.vals = append(t, s.vals...)
 	return s
 }
 

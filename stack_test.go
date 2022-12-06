@@ -80,3 +80,7 @@ func TestStack_ShiftN(t *testing.T) {
 		t.Errorf("expected %#v got %#v", expected, vals)
 	}
 }
+
+func TestStack_Poke(t *testing.T) {
+
+}
