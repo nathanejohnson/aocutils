@@ -54,7 +54,7 @@ func SliceMap[T any](vals []T, f func(T) T) []T {
 	return vals
 }
 
-func SliceMapModify[T1 any, T2 any](vals []T1, f func(T1) T2) []T2 {
+func SliceMapMutate[T1 any, T2 any](vals []T1, f func(T1) T2) []T2 {
 	retVals := make([]T2, len(vals))
 	for i := range vals {
 		retVals[i] = f(vals[i])
